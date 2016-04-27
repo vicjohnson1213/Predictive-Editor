@@ -49,6 +49,9 @@ getMatchedWords :: String -> Dictionary -> [String]
 getMatchedWords "" _      = []
 getMatchedWords prev dict = map fst $ getMatches prev dict
 
+initialize :: String -> Dictionary
+initialize = countWords 
+
 -- main :: IO ()
 -- main = do
 --     print "starting"

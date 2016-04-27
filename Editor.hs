@@ -19,6 +19,8 @@ import qualified Brick.AttrMap as A
 import Brick.Widgets.Border as B
 import Brick.Util()
 
+import System.Environment (getArgs)
+
 safeHead :: [a] -> Maybe a
 safeHead lst
     | null lst  = Nothing
@@ -59,10 +61,10 @@ completeWord new st = st & edit .~ E.completeWord new (st ^. edit)
 getSuggestions :: St -> [String]
 getSuggestions st = P.getMatchedWords (P.fixString $ E.lastWord (st ^. edit)) (st ^. dict)
 
-initialState :: St
-initialState = St {
+initialState :: P.Dictionary -> St
+initialState dict = St {
     _edit = E.editor "editor" (str . unlines) Nothing "",
-    _dict = M.empty
+    _dict = dict
 }
 
 theMap :: A.AttrMap
@@ -84,5 +86,15 @@ theApp =
 
 main :: IO ()
 main = do
-    _ <- M.defaultMain theApp initialState
-    putStrLn "done"
+    args <- getArgs
+    print args
+
+    if (not . null) args
+        then do
+            contents <- readFile $ head args
+            _ <- M.defaultMain theApp $ initialState $ P.initialize contents
+            putStrLn "done"
+        else do
+            _ <- M.defaultMain theApp $ initialState M.empty
+            putStrLn "done"
+
