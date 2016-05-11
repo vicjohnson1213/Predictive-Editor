@@ -8,7 +8,7 @@ In order to install the dependencies for this project, run the following command
 
 ```bash
 cabal update
-cabal install
+cabal install --only-dependencies
 ```
 
 ## Run the Editor
